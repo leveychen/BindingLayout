@@ -1,0 +1,46 @@
+<idea-plugin>
+  <id>cn.levey.mvvmlayout</id>
+  <name>Mvvm Layout</name>
+  <version>1.0</version>
+  <vendor email="leveychen@gmail.com" url="https://www.levey.cn/">LEVEY.CN</vendor>
+
+  <description><![CDATA[
+      Mvvm Layout description<br>
+      <em>most HTML tags may be used</em>
+    ]]></description>
+
+  <change-notes><![CDATA[
+      1.0
+      <ul>
+      <li>init</li>
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="145.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+    <action id="MvvmLayout" class="MvvmLayoutAction" text="MvvmLayout">
+      <add-to-group group-id="GenerateGroup" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="alt l"/>
+    </action>
+
+  </actions>
+
+  <application-components>
+    <component>
+      <implementation-class>MvvmLayout</implementation-class>
+    </component>
+  </application-components>
+</idea-plugin>
