@@ -6,8 +6,8 @@ import org.jetbrains.annotations.NotNull;
  * Created by levey on 2018/3/21.
  * Main ApplicationComponent
  */
-public class MvvmLayout implements ApplicationComponent {
-    public MvvmLayout() {
+public class BindingLayout implements ApplicationComponent {
+    public BindingLayout() {
     }
 
     @Override
@@ -23,22 +23,13 @@ public class MvvmLayout implements ApplicationComponent {
     @Override
     @NotNull
     public String getComponentName() {
-        return "MvvmLayout";
+        return "BindingLayout";
     }
 
 
-    public void error(String str) {
-
+    public void error(String s) {
         // Show dialog with message
-
-        Messages.showMessageDialog(
-
-                str,
-
-                "Mvvm Layout",
-
-                Messages.getInformationIcon()
-
+        Messages.showMessageDialog("ERROR: " + s, "BindingLayout", Messages.getInformationIcon()
         );
 
     }

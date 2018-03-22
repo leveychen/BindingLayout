@@ -8,7 +8,7 @@ import com.google.common.base.CaseFormat;
  */
 public class Sys {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     public static void out(String s){
         if(DEBUG){
@@ -23,6 +23,6 @@ public class Sys {
         if(className.endsWith(".JAVA")){
             className = className.replaceAll(".JAVA","");
         }
-        return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, className) + ".xml";
+        return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, className);
     }
 }

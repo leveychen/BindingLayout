@@ -1,20 +1,13 @@
 <idea-plugin>
-  <id>cn.levey.mvvmlayout</id>
-  <name>Mvvm Layout</name>
-  <version>1.0</version>
-  <vendor email="leveychen@gmail.com" url="https://www.levey.cn/">LEVEY.CN</vendor>
+  <id>cn.levey.binding_layout</id>
+  <name>Binding Layout</name>
+  <version>1.0.0</version>
+  <!--<vendor email="leveychen@gmail.com" url="https://www.levey.cn/">LEVEY.CN</vendor>-->
 
   <description><![CDATA[
-      Mvvm Layout description<br>
-      <em>most HTML tags may be used</em>
+      quickly to create a data binding layout
     ]]></description>
 
-  <change-notes><![CDATA[
-      1.0
-      <ul>
-      <li>init</li>
-    ]]>
-  </change-notes>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
   <idea-version since-build="145.0"/>
@@ -31,7 +24,7 @@
 
   <actions>
     <!-- Add your actions here -->
-    <action id="MvvmLayout" class="MvvmLayoutAction" text="MvvmLayout">
+    <action id="BindingLayout" class="BindingLayoutAction" text="Binding Layout">
       <add-to-group group-id="GenerateGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="alt l"/>
     </action>
@@ -40,7 +33,7 @@
 
   <application-components>
     <component>
-      <implementation-class>MvvmLayout</implementation-class>
+      <implementation-class>BindingLayout</implementation-class>
     </component>
   </application-components>
 </idea-plugin>
