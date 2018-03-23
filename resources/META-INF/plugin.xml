@@ -1,39 +1,43 @@
 <idea-plugin>
-  <id>cn.levey.binding_layout</id>
-  <name>Binding Layout</name>
-  <version>1.0.0</version>
-  <!--<vendor email="leveychen@gmail.com" url="https://www.levey.cn/">LEVEY.CN</vendor>-->
+    <id>cn.levey.binding_layout</id>
+    <name>Binding Layout</name>
+    <version>1.0.0</version>
+    <vendor email="leveychen@gmail.com" url="https://github.com/leveychen/BindingLayout">GitHub</vendor>
 
-  <description><![CDATA[
-      quickly to create a data binding layout
-    ]]></description>
+    <description>
+        <![CDATA[
+<html> quickly to create a data binding layout<br><br>
+<a href="https://github.com/leveychen/BindingLayout"> GitHub</a>
+</html>
+      ]]>
+    </description>
 
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="145.0"/>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="145.0"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
 
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
 
-  <actions>
-    <!-- Add your actions here -->
-    <action id="BindingLayout" class="BindingLayoutAction" text="Binding Layout">
-      <add-to-group group-id="GenerateGroup" anchor="last"/>
-      <keyboard-shortcut keymap="$default" first-keystroke="alt l"/>
-    </action>
+    <actions>
+        <!-- Add your actions here -->
+        <action id="BindingLayout" class="BindingLayoutAction" text="Binding Layout">
+            <add-to-group group-id="GenerateGroup" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt l" second-keystroke="ctrl alt l"/>
+        </action>
 
-  </actions>
+    </actions>
 
-  <application-components>
-    <component>
-      <implementation-class>BindingLayout</implementation-class>
-    </component>
-  </application-components>
+    <application-components>
+        <component>
+            <implementation-class>BindingLayout</implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>

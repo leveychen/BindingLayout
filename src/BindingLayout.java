@@ -3,7 +3,7 @@ import com.intellij.openapi.ui.Messages;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by levey on 2018/3/21.
+ * Created by levey on 2018/3/22.
  * Main ApplicationComponent
  */
 public class BindingLayout implements ApplicationComponent {
@@ -29,8 +29,13 @@ public class BindingLayout implements ApplicationComponent {
 
     public void error(String s) {
         // Show dialog with message
-        Messages.showMessageDialog("ERROR: " + s, "BindingLayout", Messages.getInformationIcon()
-        );
+        Messages.showMessageDialog(s, "Binding Layout", Messages.getErrorIcon());
+
+    }
+
+    public void info(String s) {
+        // Show dialog with message
+        Messages.showMessageDialog(s, "Binding Layout", Messages.getInformationIcon());
 
     }
 }

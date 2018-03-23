@@ -4,7 +4,6 @@ import com.intellij.codeInsight.generation.actions.BaseGenerateAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKeys;
-
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
@@ -13,28 +12,21 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
-
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.util.PsiUtilBase;
 import org.apache.http.util.TextUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
 import org.jetbrains.annotations.NotNull;
-
 import utils.Sys;
 import utils.WriterUtil;
 
-
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-
 
 /**
- * Created by levey on 2018/3/21.
+ * Created by levey on 2018/3/22.
  * Main Action
  */
 public class BindingLayoutAction extends BaseGenerateAction {
@@ -70,14 +62,14 @@ public class BindingLayoutAction extends BaseGenerateAction {
         final Editor editor = DataKeys.EDITOR.getData(dataContext);
 
         if (project == null || editor == null || module == null) {
-            ml.error("Error!");
+            ml.error("system error!");
             return;
         }
 
         String moudleName = module.getModuleScope().getDisplayName().replaceAll("Module '", "").replaceAll("'", "");
 
         if (TextUtils.isEmpty(moudleName)) {
-            ml.error("moudle is null");
+            ml.error("moudle null");
             return;
         }
 
@@ -110,12 +102,12 @@ public class BindingLayoutAction extends BaseGenerateAction {
         PsiJavaFile javaFile = (PsiJavaFile) mFile;
         String pkgName = javaFile.getPackageName();
         if (TextUtils.isEmpty(pkgName)) {
-            ml.error("package is null");
+            ml.error("package null");
             return;
         }
 
         if (mFile.getParent() == null || project.getBasePath() == null) {
-            ml.error("base path is null");
+            ml.error("project path null");
             return;
         }
 
@@ -133,33 +125,57 @@ public class BindingLayoutAction extends BaseGenerateAction {
         if (!xmlParent.exists()) {
             xmlParent.mkdirs();
         } else if (xmlFile.exists()) {
-            xmlFile.delete();
+           // xmlFile.delete();
+            ml.info("layout already exists, reopen now");
+            openXml(ml,project,xmlFile,xmlFileName);
+            return;
         }
 
-        Document doc = DocumentHelper.createDocument();
-        Element root = doc.addElement("layout");
-        root.addAttribute("xmlns:android", "http://schemas.android.com/apk/res/android");
-        Element data = root.addElement("data");
-        Element variable = data.addElement("variable");
-        variable.addAttribute("name", xmlFileName);
-        variable.addAttribute("type", pkgName + "." + className);
-        root.addComment(" add layout here ");
-        OutputFormat format = new OutputFormat();
-        format.setEncoding("utf-8");// 设置XML文件的编码格式
-        format.setIndent(true);
-        format.setIndentSize(4);
-        format.setNewlines(true);
-        XMLWriter write;
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\n");
+        sb.append("<layout xmlns:android=\"http://schemas.android.com/apk/res/android\">\n");
+        sb.append("    <data>\n");
+        sb.append("        <import type=\"android.view.View\"/>\n");
+        sb.append("        <variable\n");
+        sb.append("            name=\"").append(Sys.getTypeName(mFile.getName())).append("\"\n");
+        sb.append("            type=\"").append(pkgName).append(".").append(className).append("\"\n");
+        sb.append("        />\n");
+        sb.append("    </data>\n");
+        sb.append("\n");
+        sb.append("    <LinearLayout\n");
+        sb.append("        android:layout_width=\"match_parent\"\n");
+        sb.append("        android:layout_height=\"match_parent\"\n");
+        sb.append("        android:orientation=\"vertical\">\n");
+        sb.append("\n");
+        sb.append("            <!-- add layout here -->\n");
+        sb.append("\n");
+        sb.append("    </LinearLayout>\n");
+        sb.append("</layout>\n");
         try {
-            write = new XMLWriter(new FileWriter(xmlFile), format);
-            write.write(doc);
-            write.close();
-            VirtualFile vf = VfsUtil.findFileByIoFile(xmlFile, true);
-            if (vf == null) return; // file not found
-            new OpenFileDescriptor(project, vf).navigate(true);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            FileWriter fw = new FileWriter(xmlFile, false);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(sb.toString());
+            bw.close();
+            fw.close();
+            openXml(ml,project,xmlFile,xmlFileName);
+        } catch (Exception e) {
+            ml.error("file being used :\n" + xmlPath);
         }
+
+    }
+
+    private void openXml(BindingLayout ml,Project project,File xmlFile,String xmlPath){
+        VirtualFile vf = VfsUtil.findFileByIoFile(xmlFile, true);
+        if (vf == null) {
+            ml.error("file not found :\n" + xmlPath);
+            return; // file not found
+        }
+        OpenFileDescriptor ofd = new OpenFileDescriptor(project, vf);
+        if(ofd.canNavigate() && ofd.canNavigateToSource()){
+            ofd.navigate(true);
+        }else {
+            ml.error("cannot open :\n" + xmlPath);
+        }
+
     }
 }
