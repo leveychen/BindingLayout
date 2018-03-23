@@ -1,23 +1,25 @@
 Binding Layout
 ------
-  [JetBrains](http://plugins.jetbrains.com/plugin/10555)
-  [中文README](README_CN.md)
+
+  [中文](README_CN.md)
 
 
 **This Plugin is only for Android Studio**.
+>
 Quickly to create a data binding layout.
 
 
 ## Install   
-- Using IDE built-in plugin system on Windows:
+- Windows:
   - <kbd>File</kbd> > <kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>Browse repositories...</kbd> > <kbd>Search for "BindingLayout"</kbd> > <kbd>Install Plugin</kbd>
 
-- Using IDE built-in plugin system on MacOs:
+- MacOs:
   - <kbd>Preferences</kbd> > <kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>Browse repositories...</kbd> > <kbd>Search for "BindingLayout"</kbd> > <kbd>Install Plugin</kbd>
 
 - Manually:
-  - Download the [latest release](https://github.com/leveychen/BindingLayout/blob/master/BindingLayout.jar) and install it manually using <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Install plugin from disk...</kbd>
-  - From official jetbrains store from [download](http://plugins.jetbrains.com/plugin/10555)
+  - Download the [Latest Release](https://github.com/leveychen/BindingLayout/blob/master/BindingLayout.jar) and install it manually using
+  >- <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Install plugin from disk...</kbd>
+  - JetBrains Plugin [Download](http://plugins.jetbrains.com/plugin/10555)
   
 **Restart IDE**.
 
@@ -30,18 +32,18 @@ Quickly to create a data binding layout.
 
 ###  Hotkey
 
-Default **Option + l**(Mac), **Alt + l** (Windows)
+Default:  **Option + L**  (Mac), **Alt + L** (Windows)
 
-### You can change the hotkey.
+#### You can change the hotkey.
 
 ## Demo 
 
 ###  Before
-![before.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpmutiuewjj30cl06z3yk.jpg)
+![before.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpmvcud3lnj30e00890sv.jpg)
 
 ###  After
-![after1.png](http://ww4.sinaimg.cn/large/0060lm7Tly1fpmuu6aiygj30f80fst9l.jpg)
-![after2.png](http://ww1.sinaimg.cn/large/0060lm7Tly1fpmuuctdksj30m50ezab0.jpg)
+![after1.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcudfpvj30lo0f7jsh.jpg)
+![after2.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcuhdcgj30jr0ebq3u.jpg)
 
 
 ## Version

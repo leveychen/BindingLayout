@@ -1,2 +1,76 @@
-**本插件只适用 Android Studio**
-待补充
+Binding Layout
+------
+
+  [README](README.md)
+
+
+**本插件仅适用于 Android Studio**.
+>
+快速为实体类创建用于 DataBinding 的 layout 布局
+
+
+## 安装   
+- Windows:
+  - <kbd>File</kbd> > <kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>Browse repositories...</kbd> > <kbd>Search for "BindingLayout"</kbd> > <kbd>Install Plugin</kbd>
+
+- MacOs:
+  - <kbd>Preferences</kbd> > <kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>Browse repositories...</kbd> > <kbd>Search for "BindingLayout"</kbd> > <kbd>Install Plugin</kbd>
+
+- 手动安装:
+  - 下载 [Latest Release](https://github.com/leveychen/BindingLayout/releases) 
+  >- <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Install plugin from disk...</kbd>
+  - JetBrains Plugin [Download](http://plugins.jetbrains.com/plugin/10555)
+  
+**Restart IDE**.
+
+## 用法
+### IDE
+
+![ide.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpmulivs9tj309j05pwei.jpg)
+
+![generate.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmumr9wv7j306p06sjrd.jpg) 
+
+###  快捷键
+
+默认:  **Option + L**  (Mac), **Alt + L** (Windows)
+
+#### 冲突或者自己习惯，去改快捷键吧
+
+## Demo 
+
+###  开始
+![before.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpmvcud3lnj30e00890sv.jpg)
+
+###  完成
+创建的 layout 布局 和 getter,setter 
+![after1.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcudfpvj30lo0f7jsh.jpg)
+![after2.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcuhdcgj30jr0ebq3u.jpg)
+
+
+## Version
+
+v1.0.0
+> 
+* 创建用于 data binding 的布局
+* 自动生成 getter 和 setter (可配合 GsonFormat 使用,自动追加.默认不生成 public 的属性)
+
+
+## Thanks
+Special thanks to [GsonFormat](https://github.com/zzz40500/GsonFormat) and [DataBindingModelFormatter](https://github.com/Qixingchen/DataBindingModelFormatter)
+
+
+## License
+
+    Copyright 2018 LeveyChen
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
