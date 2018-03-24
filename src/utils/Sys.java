@@ -6,9 +6,9 @@ import com.google.common.base.CaseFormat;
  * Created by levey on 2018/3/22.
  * sout.
  */
-public class Sys {
+public final class Sys {
 
-    private static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     public static void out(String s){
         if(DEBUG){
@@ -41,4 +41,9 @@ public class Sys {
         else
             return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
     }
+
+
+
+    static final String BASE_OBSERVABLE = "BaseObservable";
+    static final String BINDABLE = "Bindable";
 }

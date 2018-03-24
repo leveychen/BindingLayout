@@ -59,7 +59,7 @@ public class FieldUtils {
             return false;
         }
         for (PsiStatement psiStatement : codeBlock.getStatements()) {
-            if (psiStatement.getText().toLowerCase().contains("notifyChange".toLowerCase())) {
+            if (psiStatement.getText().toLowerCase().contains("notifyPropertyChanged".toLowerCase())) {
                 return true;
             }
         }
@@ -67,18 +67,4 @@ public class FieldUtils {
         return false;
     }
 
-    /**
-     * field is android.databinding.PropertyChangeRegistry or not
-     *
-     * @return {@code true} field is PropertyChangeRegistry
-     * {@code false} otherwise
-     */
-    public static boolean isPropertyChangeRegistry(@NotNull PsiField psiField) {
-
-        return psiField.getType().equals(
-                PsiType.getTypeByName("android.databinding.PropertyChangeRegistry",
-                        psiField.getProject(), GlobalSearchScope.allScope(psiField.getProject())));
-
-
-    }
 }

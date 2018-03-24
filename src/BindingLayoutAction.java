@@ -12,9 +12,11 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.JavaPsiFacade;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiUtilBase;
 import org.apache.http.util.TextUtils;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +32,8 @@ import java.io.FileWriter;
  * Main Action
  */
 public class BindingLayoutAction extends BaseGenerateAction {
+
+    private static GlobalSearchScope mSearchScope;
 
     @SuppressWarnings("unused")
     public BindingLayoutAction() {
@@ -64,6 +68,24 @@ public class BindingLayoutAction extends BaseGenerateAction {
         if (project == null || editor == null || module == null) {
             ml.error("system error!");
             return;
+        }
+
+        if(mSearchScope == null){
+            mSearchScope = GlobalSearchScope.allScope(project);
+        }
+
+
+        if(!Sys.DEBUG) {
+            PsiClass dataBinding = JavaPsiFacade.getInstance(project).findClass("android.databinding.Observable", mSearchScope);
+            if (dataBinding == null) {
+                ml.error("have you enabled data binding in build.gradle?\n\n" +
+                        "android {\n" +
+                        "    dataBinding {\n" +
+                        "        enabled = true\n" +
+                        "    }\n" +
+                        "}");
+                return;
+            }
         }
 
         String moudleName = module.getModuleScope().getDisplayName().replaceAll("Module '", "").replaceAll("'", "");
@@ -111,12 +133,18 @@ public class BindingLayoutAction extends BaseGenerateAction {
             return;
         }
 
+        if(psiClass.getFields().length <= 0){
+            ml.error("empty entity fields");
+            return;
+        }
+
         try {
             new WriterUtil(mFile, project, psiClass, psiClass.getFields()).execute();
         } catch (Throwable throwable) {
-            ml.error("write getter and setter error");
+            ml.error("IllegalArgumentException: please check entity fields");
             return;
         }
+
 
         String xmlFileName = Sys.getXmlFileName(mFile.getName());
         String xmlPath = project.getBasePath() + "/" + moudleName + "/src/main/res/layout/" + xmlFileName + "_view.xml";
@@ -130,6 +158,7 @@ public class BindingLayoutAction extends BaseGenerateAction {
             openXml(ml,project,xmlFile,xmlFileName);
             return;
         }
+
 
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\n");
@@ -147,7 +176,7 @@ public class BindingLayoutAction extends BaseGenerateAction {
         sb.append("        android:layout_height=\"match_parent\"\n");
         sb.append("        android:orientation=\"vertical\">\n");
         sb.append("\n");
-        sb.append("            <!-- add layout here -->\n");
+        sb.append("        <!-- add layout here -->\n");
         sb.append("\n");
         sb.append("    </LinearLayout>\n");
         sb.append("</layout>\n");
@@ -159,23 +188,25 @@ public class BindingLayoutAction extends BaseGenerateAction {
             fw.close();
             openXml(ml,project,xmlFile,xmlFileName);
         } catch (Exception e) {
-            ml.error("file being used :\n" + xmlPath);
+            ml.error("file being used :\n\n" + xmlPath);
         }
+
 
     }
 
     private void openXml(BindingLayout ml,Project project,File xmlFile,String xmlPath){
         VirtualFile vf = VfsUtil.findFileByIoFile(xmlFile, true);
         if (vf == null) {
-            ml.error("file not found :\n" + xmlPath);
+            ml.error("file not found :\n\n" + xmlPath);
             return; // file not found
         }
         OpenFileDescriptor ofd = new OpenFileDescriptor(project, vf);
         if(ofd.canNavigate() && ofd.canNavigateToSource()){
             ofd.navigate(true);
         }else {
-            ml.error("cannot open :\n" + xmlPath);
+            ml.error("cannot open :\n\n" + xmlPath);
         }
 
     }
+
 }
