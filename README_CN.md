@@ -24,7 +24,7 @@ Binding Layout
 **Restart IDE**.
 
 ## 用法
-### IDE
+### 编译器
 
 ![ide.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpmulivs9tj309j05pwei.jpg)
 
@@ -38,16 +38,23 @@ Binding Layout
 
 ## Demo 
 
-###  开始
+###  IDE
 ![before.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpmvcud3lnj30e00890sv.jpg)
 
 ###  完成
 创建的 layout 布局 和 getter,setter 
 ![after1.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcudfpvj30lo0f7jsh.jpg)
 ![after2.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcuhdcgj30jr0ebq3u.jpg)
+![after3.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpo0tv130ej30lu0o1abw.jpg)
 
 
-## Version
+
+## 版本
+
+v1.0.1
+> 
+* 支持自动生成构造器
+* 支持继承BaseObservable的实体类
 
 v1.0.0
 > 
@@ -55,7 +62,7 @@ v1.0.0
 * 自动生成 getter 和 setter (可配合 GsonFormat 使用,自动追加.默认不生成 public 的属性)
 
 
-## Thanks
+## 致谢
 Special thanks to [GsonFormat](https://github.com/zzz40500/GsonFormat) and [DataBindingModelFormatter](https://github.com/Qixingchen/DataBindingModelFormatter)
 
 

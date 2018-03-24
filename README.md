@@ -17,7 +17,7 @@ Quickly to create a data binding layout.
   - <kbd>Preferences</kbd> > <kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>Browse repositories...</kbd> > <kbd>Search for "BindingLayout"</kbd> > <kbd>Install Plugin</kbd>
 
 - Manually:
-  - Download the [Latest Release](https://github.com/leveychen/BindingLayout/blob/master/BindingLayout.jar) and install it manually using
+  - Download the [Latest Release](https://github.com/leveychen/BindingLayout/releases) and install it manually using
   >- <kbd>Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Install plugin from disk...</kbd>
   - JetBrains Plugin [Download](http://plugins.jetbrains.com/plugin/10555)
   
@@ -44,13 +44,21 @@ Default:  **Option + L**  (Mac), **Alt + L** (Windows)
 ###  After
 ![after1.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcudfpvj30lo0f7jsh.jpg)
 ![after2.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcuhdcgj30jr0ebq3u.jpg)
+![after3.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpo0tv130ej30lu0o1abw.jpg)
+
 
 
 ## Version
 
+v1.0.1
+> 
+* supports generate constructor.
+* supports BaseObservable entity
+
+
 v1.0.0
 > 
-* Quickly to create a data binding layout.
+* quickly to create a data binding layout.
 
 
 ## Thanks
