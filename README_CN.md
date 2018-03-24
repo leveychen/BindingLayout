@@ -43,9 +43,9 @@ Binding Layout
 
 ###  完成
 创建的 layout 布局 和 getter,setter 
-![after1.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcudfpvj30lo0f7jsh.jpg)
-![after2.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcuhdcgj30jr0ebq3u.jpg)
+![after1.png](http://ww4.sinaimg.cn/large/0060lm7Tly1fpo1422di1j30ix0ll0u1.jpg)
 ![after3.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpo0tv130ej30lu0o1abw.jpg)
+![after2.png](http://ww2.sinaimg.cn/large/0060lm7Tly1fpmvcuhdcgj30jr0ebq3u.jpg)
 
 
 
