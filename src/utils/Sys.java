@@ -8,7 +8,7 @@ import com.google.common.base.CaseFormat;
  */
 public final class Sys {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     public static void out(String s){
         if(DEBUG){

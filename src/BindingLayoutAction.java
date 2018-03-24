@@ -75,18 +75,18 @@ public class BindingLayoutAction extends BaseGenerateAction {
         }
 
 
-        if(!Sys.DEBUG) {
-            PsiClass dataBinding = JavaPsiFacade.getInstance(project).findClass("android.databinding.Observable", mSearchScope);
-            if (dataBinding == null) {
-                ml.error("have you enabled data binding in build.gradle?\n\n" +
-                        "android {\n" +
-                        "    dataBinding {\n" +
-                        "        enabled = true\n" +
-                        "    }\n" +
-                        "}");
-                return;
-            }
+
+        PsiClass dataBinding = JavaPsiFacade.getInstance(project).findClass("android.databinding.Observable", mSearchScope);
+        if (dataBinding == null) {
+            ml.error("have you enabled data binding in build.gradle?\n\n" +
+                    "android {\n" +
+                    "    dataBinding {\n" +
+                    "        enabled = true\n" +
+                    "    }\n" +
+                    "}");
+            return;
         }
+        
 
         String moudleName = module.getModuleScope().getDisplayName().replaceAll("Module '", "").replaceAll("'", "");
 
