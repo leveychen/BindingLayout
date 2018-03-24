@@ -59,7 +59,7 @@ v1.0.1
 v1.0.0
 > 
 * 创建用于 data binding 的布局
-* 自动生成 getter 和 setter (可配合 GsonFormat 使用,自动追加.默认不生成 public 的属性)
+* 自动生成 getter 和 setter (可配合 GsonFormat 使用,自动追加需要的方法与内容)
 
 
 ## 致谢
