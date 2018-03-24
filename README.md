@@ -39,7 +39,8 @@ Default:  **Option + L**  (Mac), **Alt + L** (Windows)
 ## Demo 
 
 ###  Before
-![before.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpmvcud3lnj30e00890sv.jpg)
+![before.png](http://ww1.sinaimg.cn/large/0060lm7Tly1fpo16c7vzzj30gw08ojrj.jpg
+)
 
 ###  After
 ![after1.png](http://ww4.sinaimg.cn/large/0060lm7Tly1fpo1422di1j30ix0ll0u1.jpg)

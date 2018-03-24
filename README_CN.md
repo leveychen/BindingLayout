@@ -39,7 +39,8 @@ Binding Layout
 ## Demo 
 
 ###  IDE
-![before.png](http://ww3.sinaimg.cn/large/0060lm7Tly1fpmvcud3lnj30e00890sv.jpg)
+![before.png](http://ww1.sinaimg.cn/large/0060lm7Tly1fpo16c7vzzj30gw08ojrj.jpg
+)
 
 ###  完成
 创建的 layout 布局 和 getter,setter 
