@@ -21,32 +21,29 @@ import java.util.Map;
  */
 
 public class WriterUtil extends WriteCommandAction.Simple  {
+    private GlobalSearchScope mSearchScope;
     private PsiClass mClass;
     private PsiElementFactory mFactory;
     private Project mProject;
-    private PsiFile mFile;
+    private PsiJavaFile mFile;
     private PsiField[] mFields;
     private boolean needAnnotation = false;
+    private String mPkgName;
+    private boolean needImplements = false;
 
 
-    public WriterUtil(PsiFile mFile, Project project, PsiClass mClass, PsiField[] fields) {
+    public WriterUtil(GlobalSearchScope searchScope, String mPkgName, PsiJavaFile mFile, Project project, PsiClass mClass,
+                      PsiField[] fields, Sys.ExtendsType extendsType,boolean hasImplements) {
         super(project, mFile);
-        mFactory = JavaPsiFacade.getElementFactory(project);
+        this.mFactory = JavaPsiFacade.getElementFactory(project);
+        this.mSearchScope = searchScope;
         this.mFile = mFile;
         this.mProject = project;
         this.mClass = mClass;
-        this.needAnnotation = checkNeedAnn();
+        this.needAnnotation = extendsType == Sys.ExtendsType.TYPE_BASE_OBSERVABLE;
         this.mFields = fields;
-    }
-
-    private boolean checkNeedAnn(){
-        for (int i = 0; i < mClass.getExtendsListTypes().length; i++) {
-            if(mClass.getExtendsListTypes()[i].getClassName().contains(Sys.BASE_OBSERVABLE)){
-                needAnnotation = true;
-                return true;
-            }
-        }
-        return false;
+        this.mPkgName = mPkgName;
+        this.needImplements = !hasImplements;
     }
 
 
@@ -60,6 +57,9 @@ public class WriterUtil extends WriteCommandAction.Simple  {
     }
 
     private void addDataBinding() {
+        addImports();
+        addExtends();
+        addImplements();
         addConstructor();
         addGetterAndSetter(mFields);
     }
@@ -68,18 +68,61 @@ public class WriterUtil extends WriteCommandAction.Simple  {
     private static final String CONSTRUCTOR_THIS = "this.";
     private static final String PUBLIC_MODIFIER = "public";
     private static final String FINAL_MODIFIER = "final";
-    private static final String PRESENT_BOOLEAN = "boolean";
     private static final String CONSTRUCTOR_NAME = "CONSTRUCTOR_NAME";
     private static final String PROPERTY_CHANGE_REGISTRY = "PropertyChangeRegistry";
 
-    private void addConstructor(){
 
-        for (int i = 0; i < mClass.getConstructors().length; i++) {
-            if(mClass.getConstructors()[i].getName().equals(mClass.getName())){
+    private void addImports(){
+        if(needAnnotation){
+            checkImports(Sys.IMPORT_BASE + Sys.BASE_OBSERVABLE);
+            checkImports(Sys.IMPORT_BASE + Sys.BINDABLE);
+            checkImports(mPkgName + ".BR");
+        }
+        if(needImplements){
+            checkImports(Sys.IMPORT_SERIALIZABLE + Sys.BASE_SERIALIZABLE);
+        }
+    }
+
+    private void checkImports(String importName){
+        assert mFile.getImportList() != null;
+        for (PsiImportStatement importStatement : mFile.getImportList().getImportStatements()){
+            if(importStatement.getQualifiedName() != null && importStatement.getQualifiedName().equals(importName)) {
                 return;
             }
         }
+        PsiClass impClz = JavaPsiFacade.getInstance(getProject()).findClass(importName, mSearchScope);
+        if (impClz != null) {
+            PsiImportStatement imp = mFactory.createImportStatement(impClz);
+            mFile.getImportList().add(imp);
+        }
 
+    }
+
+    private void addImplements(){
+        if(needImplements) {
+            if (mClass.getImplementsList() != null) {
+                PsiClassType extendsClassType = PsiClassType.getTypeByName(Sys.BASE_SERIALIZABLE, mProject, mSearchScope);
+                mClass.getImplementsList().add(mFactory.createReferenceElementByType(extendsClassType));
+            }
+        }
+    }
+
+    private void addExtends(){
+        if(needAnnotation) {
+            if (mClass.getExtendsListTypes().length <= 0) {
+                if (mClass.getExtendsList() != null) {
+                    PsiClassType extendsClassType = PsiClassType.getTypeByName(Sys.BASE_OBSERVABLE, mProject, mSearchScope);
+                    mClass.getExtendsList().add(mFactory.createReferenceElementByType(extendsClassType));
+                }
+            }
+        }
+
+    }
+
+    private void addConstructor(){
+        for (PsiMethod method : mClass.getConstructors()){
+            method.delete();
+        }
         PsiMethod emptyConstructor = mFactory.createConstructor();
         mClass.add(emptyConstructor);
         PsiMethod constructor = mFactory.createConstructor();
@@ -94,7 +137,6 @@ public class WriterUtil extends WriteCommandAction.Simple  {
                 if(field.getType().getPresentableText().equals(PROPERTY_CHANGE_REGISTRY)){
                     continue;
                 }
-
                 PsiParameter parameter = mFactory.createParameter(field.getName(), field.getType());
                 constructor.getParameterList().add(parameter);
                 fields.put(field, parameter);
@@ -103,13 +145,7 @@ public class WriterUtil extends WriteCommandAction.Simple  {
         }
         for (Map.Entry<PsiField, PsiParameter> entry : fields.entrySet()) {
             if(entry.getKey().getName() != null) {
-                if (entry.getKey().getModifierList() != null && entry.getKey().getModifierList().hasModifierProperty(FINAL_MODIFIER)) {
-                    continue;
-                }
 
-                if (entry.getKey().getType().getPresentableText().equals(PROPERTY_CHANGE_REGISTRY)) {
-                    continue;
-                }
                 String en = CONSTRUCTOR_THIS + entry.getKey().getName() + " = " + entry.getValue().getName() + ";\n";
                 PsiStatement c = mFactory.createStatementFromText(en, null);
                 if (constructor.getBody() != null) {
@@ -138,25 +174,24 @@ public class WriterUtil extends WriteCommandAction.Simple  {
                 continue;
             }
 
-            boolean isBool = false;
-            if(field.getType().getPresentableText().equals(PRESENT_BOOLEAN)){
-                isBool = true;
-            }
-
+//            boolean isBool = false;
+//            if(field.getType().getPresentableText().equals(PRESENT_BOOLEAN)){
+//                isBool = true;
+//            }
 
             if (!FieldUtils.hasDBGetter(field)) {
                 if (FieldUtils.hasGetter(field)) {
                     addDBForJavaGetter(field);
                 } else {
 
-                    addObservableGetter(field,isBool);
+                    addObservableGetter(field);
                 }
             }
             if (!FieldUtils.hasDBSetter(field)) {
                 if (FieldUtils.hasSetter(field)) {
                     addDBForJavaSetter(field, BRName);
                 } else {
-                    addObservableSetter(field, BRName,isBool);
+                    addObservableSetter(field, BRName);
                 }
             }
         }
@@ -167,17 +202,26 @@ public class WriterUtil extends WriteCommandAction.Simple  {
      *
      * @param field field need add DB getter
      */
-    private void addObservableGetter(@NotNull PsiField field,boolean isBoolean) {
+    private void addObservableGetter(@NotNull PsiField field) {
         String getter =
-                "public " + field.getType().getPresentableText() + (isBoolean ? " is" + isMethodHasIs(field) : " get"+ getFirstUpCaseName(field.getName())) +
+                "public " + field.getType().getPresentableText() + " " + FieldUtils.getGetterName(field) +
                         "(){ \n" +
                         "return " + field.getName() + ";\n" +
                         "}";
         PsiMethod getMethod = mFactory.createMethodFromText(getter, mClass);
-        if(needAnnotation) {
-            getMethod.getModifierList().addAnnotation(Sys.BINDABLE);
-        }
+        addAnnotation(getMethod);
         mClass.add(getMethod);
+    }
+
+    private void addAnnotation(PsiMethod psiMethod){
+        if(needAnnotation) {
+            for (PsiAnnotation annotation : psiMethod.getModifierList().getAnnotations()) {
+                if (annotation.getQualifiedName() != null && annotation.getQualifiedName().contains(Sys.BINDABLE)) {
+                    return;
+                }
+            }
+            psiMethod.getModifierList().addAnnotation(Sys.IMPORT_BASE + Sys.BINDABLE);
+        }
     }
 
     /**
@@ -188,9 +232,7 @@ public class WriterUtil extends WriteCommandAction.Simple  {
     private void addDBForJavaGetter(@NotNull PsiField psiField) {
         PsiMethod getter = PropertyUtil.findGetterForField(psiField);
         assert getter != null;
-        if(needAnnotation) {
-            getter.getModifierList().addAnnotation(Sys.BINDABLE);
-        }
+        addAnnotation(getter);
     }
 
     /**
@@ -198,27 +240,15 @@ public class WriterUtil extends WriteCommandAction.Simple  {
      *
      * @param field field need add DB setter
      */
-    private void addObservableSetter(@NotNull PsiField field, @NotNull String BRName,boolean isBool) {
-        String setter = "public void set" + isMethodHasIs(field) +
+    private void addObservableSetter(@NotNull PsiField field, @NotNull String BRName) {
+        String setter = "public void " + FieldUtils.getSetterName(field) +
                 "(" + field.getType().getPresentableText() + " " +
-                isSetterBrHasIs(field) + "){\n " +
-                "        this." + field.getName() + " = " + isSetterBrHasIs(field) + ";\n" +
-//                (needAnnotation ? "        notifyPropertyChanged( " + BRName + "." + (isBool ? isSetterBrHasIs(field) : field.getName()) + ");\n" : "" ) +
-                (needAnnotation ? "        notifyPropertyChanged( " + BRName + "." + isSetterBrHasIs(field) + ");\n" : "" ) +
+                field.getName() + "){\n " +
+                "        this." + field.getName() + " = " + field.getName() + ";\n" +
+                (needAnnotation ? "        notifyPropertyChanged( " + BRName + "." + field.getName() + ");\n" : "" ) +
                 "    }";
         mClass.add(mFactory.createMethodFromText(setter, mClass));
     }
-
-    private String isSetterBrHasIs(@NotNull PsiField field){
-        return getFirstLowCaseName(getFirstLowCaseName(field.getName()).replaceFirst("is",""));
-    }
-
-    private String isMethodHasIs(@NotNull PsiField field){
-        return getFirstUpCaseName(getFirstLowCaseName(field.getName()).replaceFirst("is",""));
-    }
-
-
-
 
 
     /**
@@ -234,24 +264,12 @@ public class WriterUtil extends WriteCommandAction.Simple  {
         }
         if(needAnnotation) {
             PsiStatement last = codeBlock.getStatements()[codeBlock.getStatements().length - 1];
-            PsiStatement notify = mFactory.createStatementFromText("notifyPropertyChanged( " + BRName + "." + isSetterBrHasIs(psiField) + ");", setter);
+            PsiStatement notify = mFactory.createStatementFromText("notifyPropertyChanged( " + BRName + "." + FieldUtils.getSetterName(psiField) + ");", setter);
             codeBlock.addAfter(notify, last);
         }
     }
 
-    private String getFirstLowCaseName(String name) {
-        if (TextUtils.isEmpty(name)) {
-            return name;
-        }
-        return name.substring(0, 1).toLowerCase() + name.substring(1);
-    }
 
-    private String getFirstUpCaseName(String name) {
-        if (TextUtils.isEmpty(name)) {
-            return name;
-        }
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
-    }
 
     /**
      * find BR class name
@@ -262,10 +280,9 @@ public class WriterUtil extends WriteCommandAction.Simple  {
      */
     @NotNull
     private String findBR() {
-        GlobalSearchScope scope = GlobalSearchScope.projectScope(getProject());
         String packageName = ((PsiJavaFile) mClass.getContainingFile()).getPackageName();
         while (packageName.contains(".")) {
-            PsiClass BRClass = JavaPsiFacade.getInstance(getProject()).findClass(packageName + ".BR", scope);
+            PsiClass BRClass = JavaPsiFacade.getInstance(getProject()).findClass(packageName + ".BR", mSearchScope);
             if (BRClass != null) {
                 String name = BRClass.getQualifiedName();
                 if (name != null && name.startsWith(".")) {

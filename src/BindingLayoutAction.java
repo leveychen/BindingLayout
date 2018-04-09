@@ -18,11 +18,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiUtilBase;
+import dialog.ExtendsDialog;
 import org.apache.http.util.TextUtils;
 import org.jetbrains.annotations.NotNull;
 import utils.Sys;
 import utils.WriterUtil;
 
+import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -70,13 +72,16 @@ public class BindingLayoutAction extends BaseGenerateAction {
             return;
         }
 
+//        if(Sys.DEBUG){
+//            return;
+//        }
+
         if(mSearchScope == null){
             mSearchScope = GlobalSearchScope.allScope(project);
         }
 
 
-
-        PsiClass dataBinding = JavaPsiFacade.getInstance(project).findClass("android.databinding.Observable", mSearchScope);
+        PsiClass dataBinding = JavaPsiFacade.getInstance(project).findClass(Sys.IMPORT_BASE + Sys.BASE_OBSERVABLE, mSearchScope);
         if (dataBinding == null) {
             ml.error("have you enabled data binding in build.gradle?\n\n" +
                     "android {\n" +
@@ -86,11 +91,10 @@ public class BindingLayoutAction extends BaseGenerateAction {
                     "}");
             return;
         }
-        
 
-        String moudleName = module.getModuleScope().getDisplayName().replaceAll("Module '", "").replaceAll("'", "");
 
-        if (TextUtils.isEmpty(moudleName)) {
+        String moduleName = module.getModuleScope().getDisplayName().replaceAll("Module '", "").replaceAll("'", "");
+        if (TextUtils.isEmpty(moduleName)) {
             ml.error("moudle null");
             return;
         }
@@ -121,6 +125,24 @@ public class BindingLayoutAction extends BaseGenerateAction {
             return;
         }
 
+        Sys.ExtendsType extendsType = Sys.hasExtends(psiClass);
+        boolean hasImplements = Sys.hasImplements(psiClass);
+        boolean hasExtends = extendsType == Sys.ExtendsType.TYPE_BASE_OBSERVABLE;
+        if(!hasExtends || !hasImplements){
+            ExtendsDialog dialog = new ExtendsDialog(hasExtends,hasImplements);
+            dialog.setMinimumSize(new Dimension(320, 240));
+            dialog.setLocationRelativeTo(null);
+            dialog.setModal(true);
+            dialog.setVisible(true);
+            if(dialog.isExtendsChecked()){
+                extendsType = Sys.ExtendsType.TYPE_BASE_OBSERVABLE;
+            }
+            hasImplements = !dialog.isImplementsChecked();
+            if(dialog.isCancel()){
+                return;
+            }
+        }
+
         PsiJavaFile javaFile = (PsiJavaFile) mFile;
         String pkgName = javaFile.getPackageName();
         if (TextUtils.isEmpty(pkgName)) {
@@ -139,7 +161,7 @@ public class BindingLayoutAction extends BaseGenerateAction {
         }
 
         try {
-            new WriterUtil(mFile, project, psiClass, psiClass.getFields()).execute();
+            new WriterUtil(mSearchScope,pkgName,javaFile, project, psiClass, psiClass.getFields(), extendsType,hasImplements).execute();
         } catch (Throwable throwable) {
             ml.error("IllegalArgumentException: please check entity fields");
             return;
@@ -147,7 +169,7 @@ public class BindingLayoutAction extends BaseGenerateAction {
 
 
         String xmlFileName = Sys.getXmlFileName(mFile.getName());
-        String xmlPath = project.getBasePath() + "/" + moudleName + "/src/main/res/layout/" + xmlFileName + "_view.xml";
+        String xmlPath = project.getBasePath() + "/" + moduleName + "/src/main/res/layout/" + xmlFileName + "_view.xml";
         File xmlFile = new File(xmlPath);
         File xmlParent = xmlFile.getParentFile();
         if (!xmlParent.exists()) {

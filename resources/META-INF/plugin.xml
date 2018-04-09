@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>cn.levey.binding_layout</id>
     <name>Binding Layout</name>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <vendor email="leveychen@gmail.com" url="https://github.com/leveychen/BindingLayout">GitHub</vendor>
 
     <description>

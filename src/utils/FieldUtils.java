@@ -20,6 +20,22 @@ public class FieldUtils {
         return PropertyUtil.findGetterForField(psiField) != null;
     }
 
+    public static String getGetterName(@NotNull PsiField psiField){
+        PsiMethod method = PropertyUtil.generateGetterPrototype(psiField);
+        if(method != null && !method.getName().isEmpty()){
+            return method.getName();
+        }
+        return "get" + psiField.getName();
+    }
+
+    public static String getSetterName(@NotNull PsiField psiField){
+        PsiMethod method = PropertyUtil.generateSetterPrototype(psiField);
+        if(method != null && !method.getName().isEmpty()){
+            return method.getName();
+        }
+        return "set" + psiField.getName();
+    }
+
     /**
      * field has setter or not
      *
@@ -38,7 +54,7 @@ public class FieldUtils {
      */
     public static boolean hasDBGetter(@NotNull PsiField psiField) {
         PsiMethod getter = PropertyUtil.findGetterForField(psiField);
-        return getter != null && getter.getModifierList().findAnnotation("android.databinding.Bindable") != null;
+        return getter != null && getter.getModifierList().findAnnotation(Sys.IMPORT_BASE + Sys.BINDABLE) != null;
     }
 
     /**
@@ -63,7 +79,6 @@ public class FieldUtils {
                 return true;
             }
         }
-
         return false;
     }
 
